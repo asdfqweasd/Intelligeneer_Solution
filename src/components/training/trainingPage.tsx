@@ -2,11 +2,18 @@
 import { useState, useRef } from "react";
 import { pos_AndroidLink } from "@/lib/data";
 
-export default function Training() {
-  const [language, setLanguage] = useState("zh");
-  const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
+interface LanguageData {
+  zh: { name: string; value: string; }[];
+  en: { name: string; value: string; }[];
+}
 
-  const handleLanguageChange = (lang: string) => {
+
+export default function Training() {
+  const [language, setLanguage] = useState<keyof LanguageData>("zh");
+  const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
+  
+
+  const handleLanguageChange = (lang: keyof LanguageData) => {
     setLanguage(lang);
   };
 
