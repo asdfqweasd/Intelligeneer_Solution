@@ -1,5 +1,5 @@
 "use client"
-import Intro from "@/components/intro";
+import Intro from "@/pages/intro";
 import { useActiveSectionContext } from "../context/active-section-context";
 import Training from "@/components/training/trainingPage";
 

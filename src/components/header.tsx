@@ -22,7 +22,7 @@ export default function Header() {
           {links.map((link) => (
             <motion.li
               className="h-3/4 flex items-center justify-center relative"
-              key={link.hash}
+              key={link.name}
               initial={{ y: -100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
             >
@@ -34,11 +34,12 @@ export default function Header() {
                       activeSection === link.name,
                   }
                 )}
-                href={link.hash}
+                href={link.hash }
                 onClick={() => {
                   setActiveSection(link.name);
                   setTimeOfLastClick(Date.now());
                 }}
+                
               >
                 {link.name}
                 {link.name === activeSection && (

@@ -1,32 +1,36 @@
+import { hash } from "crypto";
 import React from "react";
-// import { CgWorkAlt } from "react-icons/cg";
-// import { FaReact } from "react-icons/fa";
-// import { LuGraduationCap } from "react-icons/lu";
 
 export const links = [
   {
     name: "Home",
-    hash: "#home",
+    path: "/home",
+    hash:"#training"
   },
   {
     name: "About",
-    hash: "#about",
+    path: "/home",
+    hash:"#training"
   },
   {
     name: "Products",
-    hash: "#products",
+    path: "/home",
+    hash:"#training"
   },
   {
     name: "Robotics",
-    hash: "#robotics",
+    path: "/home",
+    hash:"#training"
   },
   {
     name: "Training",
-    hash: "#training",
+    path:"/training",
+    hash:"#training"
   },
   {
     name: "Contact",
-    hash: "#contact",
+    path: "/home",
+    hash:"#training"
   },
 ] as const;
 
