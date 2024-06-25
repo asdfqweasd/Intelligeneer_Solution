@@ -2,8 +2,12 @@ import { useState, useRef } from "react";
 import { pos_AndroidLink } from "@/lib/data";
 
 interface LanguageData {
-  zh: { name: string; value: string; }[];
-  en: { name: string; value: string; }[];
+  zh: { name: string; value: string }[];
+  en: { name: string; value: string }[];
+  zhme: { name: string; value: string }[];
+  enme: { name: string; value: string }[];
+  zhbc: { name: string; value: string }[];
+  enbc: { name: string; value: string }[];
 }
 
 export default function Training() {
@@ -31,7 +35,7 @@ export default function Training() {
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="font-bold text-4xl my-4 left-2/3 mx-4">Training Page</h1>
+      <h1 className="font-bold text-4xl my-4 left-2/3 mx-4">PosPal Training Page</h1>
       {!language ? (
         <div className="my-4 flex space-x-4">
           <div className="relative group">
@@ -56,29 +60,77 @@ export default function Training() {
           <div className="flex-1 flex flex-col items-center">
             <div className="my-4 flex space-x-4">
               <div className="relative group">
-                <button 
+                <button
                   className="bg-blue-500 text-white px-4 py-2 w-48 rounded hover:bg-blue-600"
                   onClick={() => handleLanguageChange("zh")}
                 >
                   银豹教学
                 </button>
                 <ul className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border border-gray-200 mt-1 rounded shadow-lg transition-all duration-300 ease-in-out delay-75">
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100" onClick={() => handleLanguageChange("zh")}>收银端教学-安卓版</a></li>
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">收银端教学-会员功能</a></li>
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">后台教学</a></li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => handleLanguageChange("zh")}
+                    >
+                      收银端教学-安卓版
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => handleLanguageChange("zhme")}
+                    >
+                      收银端教学-会员功能
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => handleLanguageChange("zhbc")}
+                    >
+                      后台教学
+                    </a>
+                  </li>
                 </ul>
               </div>
               <div className="relative group">
-                <button 
+                <button
                   className="bg-blue-500 text-white px-4 py-2 w-48 rounded hover:bg-blue-600"
                   onClick={() => handleLanguageChange("en")}
                 >
                   PosPal Training
                 </button>
                 <ul className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border border-gray-200 mt-1 rounded shadow-lg transition-all duration-300 ease-in-out delay-75">
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100" onClick={() => handleLanguageChange("en")}>PosPal -Android Version</a></li>
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">PosPal Training - Membership Function</a></li>
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100">Backend Training</a></li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => handleLanguageChange("en")}
+                    >
+                      PosPal -Android Version
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => handleLanguageChange("enme")}
+                    >
+                      PosPal Training - Membership Function
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => handleLanguageChange("enbc")}
+                    >
+                      Backend Training
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>

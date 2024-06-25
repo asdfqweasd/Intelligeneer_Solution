@@ -2,6 +2,8 @@
 import Intro from "@/pages/intro";
 import { useActiveSectionContext } from "../context/active-section-context";
 import Training from "@/components/training/trainingPage";
+import Contact from "@/components/contact";
+import AdapayTraining from "@/components/training/adaPay";
 
 
 export default function Home() {
@@ -10,9 +12,9 @@ export default function Home() {
   return (
     <main className="flex flex-col items-center">
     {activeSection === "Home" && <Intro />}
-    {activeSection === "Training" && <Training />}
-
-
+    {activeSection === "Pospal" && <Training />}
+    {activeSection === "Contact" && <Contact />}
+    {activeSection === "AdaPay" && <AdapayTraining />}
   </main>
   
   );
