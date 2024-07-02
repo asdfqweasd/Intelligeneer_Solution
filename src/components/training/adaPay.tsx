@@ -61,7 +61,7 @@ export default function AdapayTraining() {
                   className="mb-5 w-full max-w-3xl mx-auto text-center"
                 >
                   <h2 className="text-xl font-semibold text-center mb-2 max-w-full break-words">
-                    {video.name}
+                    {index+1+" : "+video.name}
                   </h2>
                   <iframe
                     width="660"
@@ -76,8 +76,8 @@ export default function AdapayTraining() {
             </div>
           </div>
           {/* 导航栏 */}
-          <div className="ml-10 w-40">
-            <div className="fixed top-48 text-left">
+          <div className="ml-10 w-60 sm:w-60 lg:w-80">
+            <div className="fixed top-80 text-left mx-2 sm:mx-30 w-full">
               <h2 className="font-bold text-xl">
                 {language === "zh" ? "导航" : "Navigation"}
               </h2>
@@ -85,10 +85,10 @@ export default function AdapayTraining() {
                 {adapayData[language].map((video, index) => (
                   <li key={index} className="my-1">
                     <button
-                      className="text-blue-500 hover:text-blue-700 truncate break-all text-left mb-2 max-w-24 md:max-w-3xl break-words"
+                      className="text-blue-500 hover:text-blue-700 text-left mb-2 w-full text-sm sm:text-base break-words "
                       onClick={() => handleScrollToVideo(index)}
                     >
-                      {video.name}
+                      {index+1+" : "+video.name}
                     </button>
                   </li>
                 ))}

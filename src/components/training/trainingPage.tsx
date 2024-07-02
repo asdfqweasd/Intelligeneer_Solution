@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { pos_AndroidLink } from "@/lib/data";
 
 interface LanguageData {
@@ -12,10 +12,14 @@ interface LanguageData {
 
 export default function Training() {
   const [language, setLanguage] = useState<keyof LanguageData | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const itemsPerPage = 10;
 
   const handleLanguageChange = (lang: keyof LanguageData) => {
     setLanguage(lang);
+    setCurrentPage(1);
   };
 
   const handleScrollToVideo = (index: number) => {
@@ -33,120 +37,77 @@ export default function Training() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  return (
-    <div className="flex flex-col items-center">
-      <h1 className="font-bold text-4xl my-4 left-2/3 mx-4">PosPal Training Page</h1>
-      {!language ? (
-        <div className="my-4 flex space-x-4">
+  const handlePrevPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    if (language) {
+      const totalPages = Math.ceil(pos_AndroidLink[language].length / itemsPerPage);
+      setCurrentPage(prev => Math.min(prev + 1, totalPages));
+    }
+  };
+
+  useEffect(() => {
+    handleScrollToTop();
+  }, [currentPage]);
+
+  if (!language) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 to-purple-500">
+        <h1 className="font-bold text-4xl my-8 text-center text-white">PosPal Training Page</h1>
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
           <div className="relative group">
             <button
-              className="bg-blue-500 text-white px-4 py-2 w-48 rounded hover:bg-blue-600"
+              className="bg-white text-blue-500 px-6 py-3 rounded-lg hover:bg-blue-100 transition duration-300 w-full sm:w-48"
               onClick={() => handleLanguageChange("zh")}
             >
               选择中文视频
             </button>
+            {/* 中文下拉菜单 */}
           </div>
           <div className="relative group">
             <button
-              className="bg-blue-500 text-white px-4 py-2 w-60 rounded hover:bg-blue-600"
+              className="bg-white text-blue-500 px-6 py-3 rounded-lg hover:bg-blue-100 transition duration-300 w-full sm:w-60"
               onClick={() => handleLanguageChange("en")}
             >
               Select English Videos
             </button>
+            {/* 英文下拉菜单 */}
           </div>
         </div>
-      ) : (
-        <div className="flex">
-          <div className="flex-1 flex flex-col items-center">
+      </div>
+    );
+  }
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = pos_AndroidLink[language].slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(pos_AndroidLink[language].length / itemsPerPage);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-r from-blue-400 to-purple-500 relative">
+      <div className="absolute inset-0 bg-white/30 backdrop-blur-md"></div>
+      <div className="relative z-10 flex flex-col items-center pt-8">
+        <h1 className="font-bold text-4xl my-8 text-center text-white">PosPal Training Page</h1>
+        <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-4 items-start">
+          <div className="flex-1 flex flex-col items-center lg:mr-8">
             <div className="my-4 flex space-x-4">
-              <div className="relative group">
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 w-48 rounded hover:bg-blue-600"
-                  onClick={() => handleLanguageChange("zh")}
-                >
-                  银豹教学
-                </button>
-                <ul className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border border-gray-200 mt-1 rounded shadow-lg transition-all duration-300 ease-in-out delay-75">
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => handleLanguageChange("zh")}
-                    >
-                      收银端教学-安卓版
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => handleLanguageChange("zhme")}
-                    >
-                      收银端教学-会员功能
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => handleLanguageChange("zhbc")}
-                    >
-                      后台教学
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div className="relative group">
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 w-48 rounded hover:bg-blue-600"
-                  onClick={() => handleLanguageChange("en")}
-                >
-                  PosPal Training
-                </button>
-                <ul className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border border-gray-200 mt-1 rounded shadow-lg transition-all duration-300 ease-in-out delay-75">
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => handleLanguageChange("en")}
-                    >
-                      PosPal -Android Version
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => handleLanguageChange("enme")}
-                    >
-                      PosPal Training - Membership Function
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => handleLanguageChange("enbc")}
-                    >
-                      Backend Training
-                    </a>
-                  </li>
-                </ul>
-              </div>
+              {/* 语言选择下拉菜单 */}
             </div>
 
             {/* 视频容器 */}
-            <div className="video-container my-5 w-full flex flex-col items-center">
-              {pos_AndroidLink[language].map((video, index) => (
+            <div className="video-container w-full flex flex-col items-center space-y-8">
+              {currentItems.map((video, index) => (
                 <div
-                  key={index}
+                  key={indexOfFirstItem + index}
                   ref={(el) => {
-                    videoRefs.current[index] = el;
+                    videoRefs.current[indexOfFirstItem + index] = el;
                   }}
-                  className="mb-5"
+                  className="w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden"
                 >
-                  <h2 className="text-xl font-semibold text-center">
-                    {video.name}
+                  <h2 className="text-xl font-semibold text-center py-4 bg-gray-200">
+                    {indexOfFirstItem + index + 1 + " : " + video.name}
                   </h2>
                   <iframe
                     width="660"
@@ -154,41 +115,77 @@ export default function Training() {
                     src={`https://www.youtube.com/embed/${video.value}&vq=hd1080`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                    className="mx-auto"
                   ></iframe>
                 </div>
               ))}
             </div>
+
+            {/* 分页控制 */}
+            <div className="flex justify-between w-full max-w-md my-8">
+              <button
+                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
+                {language.startsWith('zh') ? "上一页" : "Previous"}
+              </button>
+              <span className="flex items-center font-semibold text-white">{currentPage} / {totalPages}</span>
+              <button
+                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
+                {language.startsWith('zh') ? "下一页" : "Next"}
+              </button>
+            </div>
           </div>
+
           {/* 导航栏 */}
-          <div className="ml-10 w-40">
-            <div className="fixed top-48 text-left">
-              <h2 className="font-bold text-xl">
-                {language === "zh" ? "导航" : "Navigation"}
+          <div className="lg:w-80 mt-8 lg:mt-0 fixed right-4 top-1/2 transform -translate-y-1/2">
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-6">
+              <h2 className="font-bold text-2xl mb-4 text-gray-800">
+                {language.startsWith('zh') ? "导航" : "Navigation"}
               </h2>
-              <ul className="list-item">
-                {pos_AndroidLink[language].map((video, index) => (
-                  <li key={index} className="my-1">
+              <ul className="space-y-2 mb-6 max-h-[50vh] overflow-y-auto">
+                {currentItems.map((video, index) => (
+                  <li key={indexOfFirstItem + index}>
                     <button
-                      className="text-blue-500 hover:text-blue-700 truncate break-all text-left"
-                      onClick={() => handleScrollToVideo(index)}
+                      className="text-blue-500 hover:text-blue-700 text-left w-full text-sm truncate"
+                      onClick={() => handleScrollToVideo(indexOfFirstItem + index)}
                     >
-                      {video.name}
+                      {indexOfFirstItem + index + 1 + " : " + video.name}
                     </button>
                   </li>
                 ))}
               </ul>
-              <div className="text-left my-4">
+              <div className="flex justify-between items-center mb-4">
                 <button
-                  className="bg-blue-500 text-white font-semibold py-2 px-4 rounded"
-                  onClick={handleScrollToTop}
+                  className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 1}
                 >
-                  {language === "zh" ? "回到顶端" : "Scroll to Top"}
+                  {language.startsWith('zh') ? "上一页" : "Prev"}
+                </button>
+                <span className="text-sm font-semibold">{currentPage} / {totalPages}</span>
+                <button
+                  className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                >
+                  {language.startsWith('zh') ? "下一页" : "Next"}
                 </button>
               </div>
+              <button
+                className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-300 w-full"
+                onClick={handleScrollToTop}
+              >
+                {language.startsWith('zh') ? "回到顶端" : "Scroll to Top"}
+              </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -578,6 +578,10 @@ export const adaPayLink = {
     {
       "name": "在刷卡机上退款",
       "value": "PLARAy0Gh8lsaSwmNpKouDr7_lA6A-8Itl&si=YnCecXzp4SI1460K&index=7"
+    },
+    {
+      "name": "AdaPay Customer with Standalone EFTPOS, Check Total Transaction Report",
+      "value": "PLARAy0Gh8lsaSwmNpKouDr7_lA6A-8Itl&si=YnCecXzp4SI1460K&index=5"
     }
   ],
   "en": [
