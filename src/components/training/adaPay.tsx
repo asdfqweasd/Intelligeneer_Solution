@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef,useEffect } from "react";
 import { adaPayLink as adapayData } from "@/lib/data";
 
 interface AdapayLanguageData {
@@ -10,10 +10,14 @@ interface AdapayLanguageData {
 
 export default function AdapayTraining() {
   const [language, setLanguage] = useState<keyof AdapayLanguageData | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const videoRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const itemsPerPage = 10;
 
   const handleLanguageChange = (lang: keyof AdapayLanguageData) => {
     setLanguage(lang);
+    setCurrentPage(1);
   };
 
   const handleScrollToVideo = (index: number) => {
@@ -31,80 +35,223 @@ export default function AdapayTraining() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  return (
-    <div className="flex flex-col items-center">
-      <h1 className="font-bold text-4xl my-4 left-2/3 mx-4">Adapay Training Page</h1>
-      <div className="my-4 flex space-x-4">
-        <button
-          className={`bg-blue-500 text-white px-4 py-2 w-48 rounded hover:bg-blue-600 ${language === 'zh' ? 'bg-blue-700' : ''}`}
-          onClick={() => handleLanguageChange("zh")}
-        >
-          选择中文视频
-        </button>
-        <button
-          className={`bg-blue-500 text-white px-4 py-2 w-60 rounded hover:bg-blue-600 ${language === 'en' ? 'bg-blue-700' : ''}`}
-          onClick={() => handleLanguageChange("en")}
-        >
-          Select English Videos
-        </button>
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    if (language) {
+      const totalPages = Math.ceil(
+        adapayData[language].length / itemsPerPage
+      );
+      setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    }
+  };
+
+  useEffect(() => {
+    handleScrollToTop();
+  }, [currentPage]);
+
+  if (!language) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r ">
+        <h1 className="font-bold text-4xl my-8 text-center text-black">
+          Adapay Training Page
+        </h1>
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+          <div className="relative group">
+            <button
+              className="bg-white text-blue-500 px-6 py-3 rounded-lg hover:bg-blue-100 transition duration-300 w-full sm:w-48"
+              onClick={() => handleLanguageChange("zh")}
+            >
+              选择中文视频
+            </button>
+            {/* 中文下拉菜单 */}
+          </div>
+          <div className="relative group">
+            <button
+              className="bg-white text-blue-500 px-6 py-3 rounded-lg hover:bg-blue-100 transition duration-300 w-full sm:w-60"
+              onClick={() => handleLanguageChange("en")}
+            >
+              Select English Videos
+            </button>
+            {/* 英文下拉菜单 */}
+          </div>
+        </div>
       </div>
-      {language && (
-        <div className="flex w-full">
-          <div className="flex-1 flex flex-col items-center">
-            <div className="video-container my-5 w-full flex flex-col items-center">
-              {adapayData[language].map((video, index) => (
+    );
+  }
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = adapayData[language].slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(adapayData[language].length / itemsPerPage);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-r relative">
+      <div className="relative z-10 flex flex-col items-center pt-8">
+        <h1 className="font-bold text-4xl my-8 text-center text-black">
+          Adapay Training Page
+        </h1>
+
+        {/* 导航栏在小屏幕时显示 */}
+        <div className="w-full max-w-7xl mx-auto px-4 mt-8 lg:hidden">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="font-bold text-2xl mb-4">
+              {language.startsWith("zh") ? "导航" : "Navigation"}
+            </h2>
+            <ul className="space-y-2 mb-6 max-h-[50vh] overflow-y-auto">
+              {currentItems.map((video, index) => (
+                <li key={indexOfFirstItem + index}>
+                  <button
+                    className="text-blue-500 hover:text-blue-700 text-left w-full text-sm truncate"
+                    onClick={() =>
+                      handleScrollToVideo(indexOfFirstItem + index)
+                    }
+                  >
+                    {indexOfFirstItem + index + 1 + " : " + video.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="flex justify-between items-center mb-4">
+              <button
+                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
+                {language.startsWith("zh") ? "上一页" : "Prev"}
+              </button>
+              <span className="text-sm font-semibold">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
+                {language.startsWith("zh") ? "下一页" : "Next"}
+              </button>
+            </div>
+            <button
+              className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-300 w-full"
+              onClick={handleScrollToTop}
+            >
+              {language.startsWith("zh") ? "回到顶端" : "Scroll to Top"}
+            </button>
+          </div>
+           {/* 回到顶部按钮 */}
+           <button
+              onClick={handleScrollToTop}
+              className="fixed bottom-4 right-4 bg-black text-white py-3 w-10 mb-8 rounded-full shadow-lg hover:bg-blue-600 transition duration-300 z-10"
+            >
+              ⬆
+            </button>
+        </div>
+
+        <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-4 items-start mt-8 space-y-8 lg:space-y-0">
+          <div className="flex-1 flex flex-col items-center lg:mr-8">
+            <div className="my-4 flex space-x-4">{/* 语言选择下拉菜单 */}</div>
+
+            {/* 视频容器 */}
+            <div className="video-container w-full flex flex-col items-center space-y-8">
+              {currentItems.map((video, index) => (
                 <div
-                  key={index}
+                  key={indexOfFirstItem + index}
                   ref={(el) => {
-                    videoRefs.current[index] = el;
+                    videoRefs.current[indexOfFirstItem + index] = el;
                   }}
-                  className="mb-5 w-full max-w-3xl mx-auto text-center"
+                  className="w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden"
                 >
-                  <h2 className="text-xl font-semibold text-center mb-2 max-w-full break-words">
-                    {index+1+" : "+video.name}
+                  <h2 className="text-xl font-semibold text-center py-4 bg-gray-200">
+                    {indexOfFirstItem + index + 1 + " : " + video.name}
                   </h2>
                   <iframe
-                    width="660"
+                    width="100%"
                     height="450"
                     src={`https://www.youtube.com/embed/${video.value}&vq=hd1080`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                    className=" mx-auto"
+                    className="mx-auto"
                   ></iframe>
                 </div>
               ))}
             </div>
+
+            {/* 分页控制 */}
+            <div className="flex justify-between w-full max-w-md my-8">
+              <button
+                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
+                {language.startsWith("zh") ? "上一页" : "Previous"}
+              </button>
+              <span className="flex items-center font-semibold">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
+                {language.startsWith("zh") ? "下一页" : "Next"}
+              </button>
+            </div>
           </div>
-          {/* 导航栏 */}
-          <div className="ml-10 w-60 sm:w-60 lg:w-80">
-            <div className="fixed top-80 text-left mx-2 sm:mx-30 w-full">
-              <h2 className="font-bold text-xl">
-                {language === "zh" ? "导航" : "Navigation"}
+
+          {/* 导航栏在大屏幕时显示 */}
+          <div className="hidden lg:block lg:w-80 mt-8 lg:mt-0 fixed right-4 top-1/2 transform -translate-y-1/2">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="font-bold text-2xl mb-4">
+                {language.startsWith("zh") ? "导航" : "Navigation"}
               </h2>
-              <ul className="list-item">
-                {adapayData[language].map((video, index) => (
-                  <li key={index} className="my-1">
+              <ul className="space-y-2 mb-6 max-h-[50vh] overflow-y-auto">
+                {currentItems.map((video, index) => (
+                  <li key={indexOfFirstItem + index}>
                     <button
-                      className="text-blue-500 hover:text-blue-700 text-left mb-2 w-full text-sm sm:text-base break-words "
-                      onClick={() => handleScrollToVideo(index)}
+                      className="text-blue-500 hover:text-blue-700 text-left w-full text-sm truncate"
+                      onClick={() =>
+                        handleScrollToVideo(indexOfFirstItem + index)
+                      }
                     >
-                      {index+1+" : "+video.name}
+                      {indexOfFirstItem + index + 1 + " : " + video.name}
                     </button>
                   </li>
                 ))}
               </ul>
-              <div className="text-left my-4">
+              <div className="flex justify-between items-center mb-4">
                 <button
-                  className="bg-blue-500 text-white font-semibold py-2 px-4 rounded"
-                  onClick={handleScrollToTop}
+                  className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 1}
                 >
-                  {language === "zh" ? "回到顶端" : "Scroll to Top"}
+                  {language.startsWith("zh") ? "上一页" : "Prev"}
+                </button>
+                <span className="text-sm font-semibold">
+                  {currentPage} / {totalPages}
+                </span>
+                <button
+                  className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                >
+                  {language.startsWith("zh") ? "下一页" : "Next"}
                 </button>
               </div>
+              <button
+                className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-300 w-full"
+                onClick={handleScrollToTop}
+              >
+                {language.startsWith("zh") ? "回到顶端" : "Scroll to Top"}
+              </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

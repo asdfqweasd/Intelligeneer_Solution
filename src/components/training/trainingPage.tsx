@@ -38,13 +38,15 @@ export default function Training() {
   };
 
   const handlePrevPage = () => {
-    setCurrentPage(prev => Math.max(prev - 1, 1));
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
 
   const handleNextPage = () => {
     if (language) {
-      const totalPages = Math.ceil(pos_AndroidLink[language].length / itemsPerPage);
-      setCurrentPage(prev => Math.min(prev + 1, totalPages));
+      const totalPages = Math.ceil(
+        pos_AndroidLink[language].length / itemsPerPage
+      );
+      setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     }
   };
 
@@ -54,8 +56,10 @@ export default function Training() {
 
   if (!language) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 to-purple-500">
-        <h1 className="font-bold text-4xl my-8 text-center text-white">PosPal Training Page</h1>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r ">
+        <h1 className="font-bold text-4xl my-8 text-center text-black">
+          PosPal Training Page
+        </h1>
         <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
           <div className="relative group">
             <button
@@ -82,22 +86,79 @@ export default function Training() {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = pos_AndroidLink[language].slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = pos_AndroidLink[language].slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(pos_AndroidLink[language].length / itemsPerPage);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-400 to-purple-500 relative">
-      <div className="absolute inset-0 bg-white/30 backdrop-blur-md"></div>
+    <div className="min-h-screen bg-gradient-to-r relative">
       <div className="relative z-10 flex flex-col items-center pt-8">
-        <h1 className="font-bold text-4xl my-8 text-center text-white">PosPal Training Page</h1>
-        <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-4 items-start">
-          <div className="flex-1 flex flex-col items-center lg:mr-8">
-            <div className="my-4 flex space-x-4">
-              {/* 语言选择下拉菜单 */}
+        <h1 className="font-bold text-4xl my-8 text-center text-black">
+          PosPal Training Page
+        </h1>
+        {/* 导航栏在小屏幕时显示 */}
+        <div className="w-full max-w-96 mx-auto px-4 mt-8 lg:hidden">
+          <div className="bg-white rounded-lg shadow-lg p-6 mx-auto">
+            <h2 className="font-bold text-2xl mb-4 truncate">
+              {language.startsWith("zh") ? "导航" : "Navigation"}
+            </h2>
+            <ul className="space-y-2 mb-6 max-h-[50vh] overflow-y-auto">
+              {currentItems.map((video, index) => (
+                <li key={indexOfFirstItem + index}>
+                  <button
+                    className="text-blue-500 hover:text-blue-700 text-left w-full text-sm truncate"
+                    onClick={() =>
+                      handleScrollToVideo(indexOfFirstItem + index)
+                    }
+                  >
+                    {indexOfFirstItem + index + 1 + " : " + video.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="flex justify-between items-center mb-4">
+              <button
+                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
+                {language.startsWith("zh") ? "上一页" : "Prev"}
+              </button>
+              <span className="text-sm font-semibold">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
+                {language.startsWith("zh") ? "下一页" : "Next"}
+              </button>
             </div>
+            <button
+              className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-300 w-full"
+              onClick={handleScrollToTop}
+            >
+              {language.startsWith("zh") ? "回到顶端" : "Scroll to Top"}
+            </button>
+          </div>
+          {/* 回到顶部按钮 */}
+          <button
+            onClick={handleScrollToTop}
+            className="fixed bottom-4 right-4 bg-black text-white py-3 w-10 mb-8 rounded-full shadow-lg hover:bg-blue-600 transition duration-300 z-10"
+          >
+            ⬆
+          </button>
+        </div>
+
+        <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-4 items-start mt-8 space-y-8 lg:space-y-0">
+          <div className="flex-1 flex flex-col items-center lg:mr-8">
+            <div className="my-4 flex space-x-4">{/* 语言选择下拉菜单 */}</div>
 
             {/* 视频容器 */}
-            <div className="video-container w-full flex flex-col items-center space-y-8">
+            <div className="video-container w-full flex flex-col items-center space-y-10">
               {currentItems.map((video, index) => (
                 <div
                   key={indexOfFirstItem + index}
@@ -110,7 +171,7 @@ export default function Training() {
                     {indexOfFirstItem + index + 1 + " : " + video.name}
                   </h2>
                   <iframe
-                    width="660"
+                    width="100%"
                     height="450"
                     src={`https://www.youtube.com/embed/${video.value}&vq=hd1080`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -128,31 +189,35 @@ export default function Training() {
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
               >
-                {language.startsWith('zh') ? "上一页" : "Previous"}
+                {language.startsWith("zh") ? "上一页" : "Previous"}
               </button>
-              <span className="flex items-center font-semibold text-white">{currentPage} / {totalPages}</span>
+              <span className="flex items-center font-semibold">
+                {currentPage} / {totalPages}
+              </span>
               <button
                 className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
               >
-                {language.startsWith('zh') ? "下一页" : "Next"}
+                {language.startsWith("zh") ? "下一页" : "Next"}
               </button>
             </div>
           </div>
 
-          {/* 导航栏 */}
-          <div className="lg:w-80 mt-8 lg:mt-0 fixed right-4 top-1/2 transform -translate-y-1/2">
-            <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-6">
-              <h2 className="font-bold text-2xl mb-4 text-gray-800">
-                {language.startsWith('zh') ? "导航" : "Navigation"}
+          {/* 导航栏在大屏幕时显示 */}
+          <div className="hidden lg:block lg:w-80 mt-8 lg:mt-0 fixed right-4 top-1/2 transform -translate-y-1/2">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="font-bold text-2xl mb-4">
+                {language.startsWith("zh") ? "导航" : "Navigation"}
               </h2>
               <ul className="space-y-2 mb-6 max-h-[50vh] overflow-y-auto">
                 {currentItems.map((video, index) => (
                   <li key={indexOfFirstItem + index}>
                     <button
                       className="text-blue-500 hover:text-blue-700 text-left w-full text-sm truncate"
-                      onClick={() => handleScrollToVideo(indexOfFirstItem + index)}
+                      onClick={() =>
+                        handleScrollToVideo(indexOfFirstItem + index)
+                      }
                     >
                       {indexOfFirstItem + index + 1 + " : " + video.name}
                     </button>
@@ -165,22 +230,24 @@ export default function Training() {
                   onClick={handlePrevPage}
                   disabled={currentPage === 1}
                 >
-                  {language.startsWith('zh') ? "上一页" : "Prev"}
+                  {language.startsWith("zh") ? "上一页" : "Prev"}
                 </button>
-                <span className="text-sm font-semibold">{currentPage} / {totalPages}</span>
+                <span className="text-sm font-semibold">
+                  {currentPage} / {totalPages}
+                </span>
                 <button
                   className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
                 >
-                  {language.startsWith('zh') ? "下一页" : "Next"}
+                  {language.startsWith("zh") ? "下一页" : "Next"}
                 </button>
               </div>
               <button
                 className="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-300 w-full"
                 onClick={handleScrollToTop}
               >
-                {language.startsWith('zh') ? "回到顶端" : "Scroll to Top"}
+                {language.startsWith("zh") ? "回到顶端" : "Scroll to Top"}
               </button>
             </div>
           </div>

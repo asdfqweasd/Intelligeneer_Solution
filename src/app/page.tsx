@@ -10,7 +10,7 @@ export default function Home() {
   const { activeSection } = useActiveSectionContext();
 
   return (
-    <main className="flex flex-col items-center">
+    <main>
     {activeSection === "Home" && <Intro />}
     {activeSection === "Pospal" && <Training />}
     {activeSection === "Contact" && <Contact />}
